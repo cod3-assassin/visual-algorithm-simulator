@@ -91,7 +91,8 @@ const AlgorithmVisualizer = () => {
               target={target}
               handleInputChange={handleInputChange}
               handleTargetChange={handleTargetChange}
-              algorithm={algorithm} // Pass the selected algorithm to InputSection
+              algorithm={algorithm}
+              category={category}
               className="flex-1 p-4 bg-gray-800 rounded-lg shadow-lg"
             />
           </div>
@@ -106,7 +107,7 @@ const AlgorithmVisualizer = () => {
                 setIsOpenAlgorithm(!isOpenAlgorithm)
               }
               handleCategoryChange={handleCategoryChange}
-              handleAlgorithmChange={handleAlgorithmChange} // Pass the handleAlgorithmChange function
+              handleAlgorithmChange={handleAlgorithmChange}
               categories={categories}
               categoryRef={categoryRef}
               algorithmRef={algorithmRef}

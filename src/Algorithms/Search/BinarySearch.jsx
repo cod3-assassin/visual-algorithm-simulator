@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as d3 from "d3";
 
-const BinarySearchVisualizer = ({ data, target }) => {
+const BinarySearch = ({ data, target }) => {
   const [steps, setSteps] = useState([]);
   const [timeTaken, setTimeTaken] = useState(null);
   const elementRefs = useRef([]);
+  const [foundIndex, setFoundIndex] = useState(-1);
 
   useEffect(() => {
     if (data?.length > 0 && target !== undefined && target !== "") {
       const startTime = performance.now();
-      binarySearch([...data], parseInt(target));
+      binarySearch(
+        [...data].sort((a, b) => a - b),
+        parseInt(target)
+      );
       const endTime = performance.now();
       setTimeTaken((endTime - startTime).toFixed(2));
     }
@@ -36,7 +40,7 @@ const BinarySearchVisualizer = ({ data, target }) => {
       const comparisonResult = compareValues(midValue, target);
       stepsCopy.push({
         step: stepsCopy.length + 1,
-        action: "Comparing",
+        action: comparisonResult === 0 ? "Comparing" : "Updating",
         low: low,
         high: high,
         mid: mid,
@@ -44,6 +48,7 @@ const BinarySearchVisualizer = ({ data, target }) => {
         comparisonResult: comparisonResult,
       });
       if (comparisonResult === 0) {
+        setFoundIndex(mid);
         break;
       } else if (comparisonResult < 0) {
         stepsCopy.push({
@@ -105,8 +110,8 @@ const BinarySearchVisualizer = ({ data, target }) => {
             d3.select(this)
               .transition()
               .duration(300)
-              .style("transform", "scale(1)")
-              .style("background-color", "");
+              .style("transform", "scale(1.1)")
+              .style("background-color", index === foundIndex ? "green" : "");
           });
       }
     });
@@ -123,11 +128,15 @@ const BinarySearchVisualizer = ({ data, target }) => {
               <span className="font-bold text-indigo-600">
                 {step.comparisonResult !== null &&
                   step.action === "Comparing" &&
-                  (step.comparisonResult === 0
-                    ? `Target found at index ${step.mid}`
-                    : step.comparisonResult < 0
-                    ? `Updating low bound to ${step.low}`
-                    : `Updating high bound to ${step.high}`)}
+                  (step.comparisonResult === 0 ? (
+                    <span style={{ color: "green", fontWeight: "bold" }}>
+                      Target Found at index {step.mid}
+                    </span>
+                  ) : step.comparisonResult < 0 ? (
+                    `Updating low bound to ${step.low}`
+                  ) : (
+                    `Updating high bound to ${step.high}`
+                  ))}
               </span>
             </div>
             <div className="flex justify-center flex-wrap">
@@ -139,7 +148,7 @@ const BinarySearchVisualizer = ({ data, target }) => {
                     step.low <= index && index <= step.high
                       ? index === step.mid
                         ? "bg-yellow-500 hover:shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
-                        : "bg-blue-500 hover:shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
+                        : "bg-red-500 hover:shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
                       : ""
                   }`}
                 >
@@ -153,7 +162,7 @@ const BinarySearchVisualizer = ({ data, target }) => {
       {steps.length > 0 && steps[steps.length - 1].comparisonResult === 0 && (
         <div className="text-center mt-4">
           <h2 className="text-2xl font-bold mb-2 text-green-700 shadow-lg">
-            Target Found at index {steps[steps.length - 1].mid}!
+            Search Complete !!
           </h2>
           <p className="text-xl text-orange-500 shadow hover:text-orange-700 transition-colors duration-300">
             Searching completed in {timeTaken} milliseconds.
@@ -171,4 +180,4 @@ const BinarySearchVisualizer = ({ data, target }) => {
   );
 };
 
-export default BinarySearchVisualizer;
+export default BinarySearch;

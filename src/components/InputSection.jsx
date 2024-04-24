@@ -6,9 +6,9 @@ const InputSection = ({
   target,
   handleInputChange,
   handleTargetChange,
-  algorithm,
+  category,
 }) => {
-  const showTargetInput = algorithm === "Binary Search"; // Change "Binary Search" to the desired algorithm name
+  const showTargetInput = category === "searching";
 
   return (
     <div className="md:col-span-3 bg-gray-800 p-4 rounded-lg shadow-lg w-full">
@@ -22,14 +22,14 @@ const InputSection = ({
         className="form-input block w-full p-3 rounded bg-gray-700 placeholder-gray-300"
         placeholder="Enter comma-separated numbers..."
       />
-      {/* Conditionally render the target input based on the selected algorithm */}
+      {/* Conditionally render the target input based on the selected category */}
       {showTargetInput && (
         <div className="mt-4">
           <label className="block text-lg font-semibold mb-2">Target</label>
           <input
             type="text"
             value={target}
-            onChange={handleTargetChange} // Add onChange handler for the target input
+            onChange={handleTargetChange}
             className="form-input block w-full p-3 rounded bg-gray-700 placeholder-gray-300"
             placeholder="Enter the target value..."
           />
