@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { CodeIcon, ChevronDownIcon } from "@heroicons/react/solid";
+import {
+  CodeIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+} from "@heroicons/react/solid";
 
 const DropdownSection = ({
   category,
@@ -17,8 +21,9 @@ const DropdownSection = ({
   const [startIdxCategory, setStartIdxCategory] = useState(0);
   const [startIdxAlgorithm, setStartIdxAlgorithm] = useState(0);
 
-  const handleCategoryScroll = (event) => {
-    const direction = event.deltaY > 0 ? "down" : "up";
+  const handleCategoryScroll = (event, direction) => {
+    event.stopPropagation(); // Prevent wheel event propagation
+
     let newIdx = startIdxCategory;
     if (direction === "up") {
       newIdx = Math.max(0, startIdxCategory - 1);
@@ -31,8 +36,9 @@ const DropdownSection = ({
     setStartIdxCategory(newIdx);
   };
 
-  const handleAlgorithmScroll = (event) => {
-    const direction = event.deltaY > 0 ? "down" : "up";
+  const handleAlgorithmScroll = (event, direction) => {
+    event.stopPropagation(); // Prevent wheel event propagation
+
     let newIdx = startIdxAlgorithm;
     const totalAlgorithms = categories[category]?.length || 0;
 
@@ -62,7 +68,7 @@ const DropdownSection = ({
           {isOpenCategory && (
             <div
               className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 z-50 overflow-y-auto"
-              onWheel={handleCategoryScroll}
+              onWheel={(e) => e.stopPropagation()}
             >
               {Object.keys(categories)
                 .slice(startIdxCategory, startIdxCategory + 3)
@@ -75,6 +81,16 @@ const DropdownSection = ({
                     {key.charAt(0).toUpperCase() + key.slice(1)}
                   </button>
                 ))}
+              <div className="scroll-arrows absolute top-0 right-0 mr-2 mt-2">
+                <ChevronUpIcon
+                  className="h-4 w-4 text-white cursor-pointer mb-1 hover:text-gray-400 hover:bg-gray-700 rounded-full transition duration-300"
+                  onClick={(e) => handleCategoryScroll(e, "up")}
+                />
+                <ChevronDownIcon
+                  className="h-4 w-4 text-white cursor-pointer mt-24 hover:text-gray-400 hover:bg-gray-700 rounded-full transition duration-300"
+                  onClick={(e) => handleCategoryScroll(e, "down")}
+                />
+              </div>
             </div>
           )}
         </div>
@@ -93,7 +109,7 @@ const DropdownSection = ({
         {isOpenAlgorithm && (
           <div
             className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 z-50 overflow-y-auto"
-            onWheel={handleAlgorithmScroll}
+            onWheel={(e) => e.stopPropagation()}
           >
             {categories[category]
               ?.slice(startIdxAlgorithm, startIdxAlgorithm + 3)
@@ -106,6 +122,16 @@ const DropdownSection = ({
                   {algo}
                 </button>
               ))}
+            <div className="scroll-arrows absolute top-0 right-0 mr-2 mt-2">
+              <ChevronUpIcon
+                className="h-4 w-4 text-white cursor-pointer mb-1 hover:text-gray-400 hover:bg-gray-700 rounded-full transition duration-300"
+                onClick={(e) => handleAlgorithmScroll(e, "up")}
+              />
+              <ChevronDownIcon
+                className="h-4 w-4 text-white cursor-pointer mt-24 hover:text-gray-400 hover:bg-gray-700 rounded-full transition duration-300"
+                onClick={(e) => handleAlgorithmScroll(e, "down")}
+              />
+            </div>
           </div>
         )}
       </div>
