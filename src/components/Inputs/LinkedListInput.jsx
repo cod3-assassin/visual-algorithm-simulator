@@ -7,7 +7,10 @@ const LinkedListInput = ({
 }) => {
   // Function to determine if the position input should be shown based on the algorithm
   const shouldShowPositionInput =
-    algorithm === "Deletion by position" || algorithm === "Deletion by value";
+    algorithm === "Deletion by position" ||
+    algorithm === "Deletion by value" ||
+    algorithm === "Insertion at beginning" ||
+    algorithm === "Insertion at end";
 
   return (
     <div>
