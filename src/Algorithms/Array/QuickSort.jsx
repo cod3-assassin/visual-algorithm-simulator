@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as d3 from "d3";
 
-const SelectionSort = ({ data }) => {
+const QuickSort = ({ data }) => {
   const [steps, setSteps] = useState([]);
   const [timeTaken, setTimeTaken] = useState(null);
   const [comparisons, setComparisons] = useState(0);
@@ -10,70 +9,61 @@ const SelectionSort = ({ data }) => {
   useEffect(() => {
     if (data.length > 0) {
       const startTime = performance.now();
-      selectionSort([...data]).then(() => {
+      quickSort([...data]).then(() => {
         const endTime = performance.now();
         setTimeTaken((endTime - startTime).toFixed(2));
       });
     }
   }, [data]);
 
-  useEffect(() => {
-    animateElements();
-  }, [steps]);
-
-  const animateElements = () => {
-    elementRefs.current.forEach((ref, index) => {
-      if (ref && steps.length) {
-        const node = d3.select(ref);
-        const currentStep = steps[steps.length - 1];
-        node
-          .transition()
-          .duration(300)
-          .style(
-            "transform",
-            currentStep.type === "sorted" ? "scale(1)" : "scale(1.1)"
-          )
-          .style(
-            "background-color",
-            currentStep.type === "sorted" ? "" : "purple"
-          )
-          .transition()
-          .duration(300)
-          .style("transform", "scale(1)")
-          .style("background-color", currentStep.type === "sorted" ? "" : "");
-      }
-    });
-  };
-
-  const selectionSort = async (array) => {
+  const quickSort = async (array) => {
     let localComparisons = 0;
     const stepsCopy = [];
 
-    for (let i = 0; i < array.length - 1; i++) {
-      let minIndex = i;
-      for (let j = i + 1; j < array.length; j++) {
+    async function partition(low, high) {
+      let pivot = array[high];
+      let i = low - 1;
+
+      for (let j = low; j < high; j++) {
         localComparisons++;
         stepsCopy.push({
           type: "compare",
-          indices: [minIndex, j],
+          indices: [j, high],
           array: [...array],
           step: stepsCopy.length + 1,
         });
         await new Promise((resolve) => setTimeout(resolve, 300));
-        if (array[j] < array[minIndex]) {
-          minIndex = j;
+        if (array[j] <= pivot) {
+          i++;
+          [array[i], array[j]] = [array[j], array[i]];
+          stepsCopy.push({
+            type: "swap",
+            indices: [i, j],
+            array: [...array],
+            step: stepsCopy.length + 1,
+          });
         }
       }
-      if (minIndex !== i) {
-        [array[i], array[minIndex]] = [array[minIndex], array[i]];
-        stepsCopy.push({
-          type: "swap",
-          indices: [i, minIndex],
-          array: [...array],
-          step: stepsCopy.length + 1,
-        });
+
+      [array[i + 1], array[high]] = [array[high], array[i + 1]];
+      stepsCopy.push({
+        type: "partition",
+        indices: [i + 1],
+        array: [...array],
+        step: stepsCopy.length + 1,
+      });
+      return i + 1;
+    }
+
+    async function quickSortHelper(low, high) {
+      if (low < high) {
+        let pi = await partition(low, high);
+        await quickSortHelper(low, pi - 1);
+        await quickSortHelper(pi + 1, high);
       }
     }
+
+    await quickSortHelper(0, array.length - 1);
 
     stepsCopy.push({
       type: "sorted",
@@ -99,6 +89,8 @@ const SelectionSort = ({ data }) => {
                     ? "text-blue-500"
                     : step.type === "swap"
                     ? "text-red-500"
+                    : step.type === "partition"
+                    ? "text-yellow-500"
                     : "text-green-400 shadow-lg"
                 }`}
               >
@@ -106,6 +98,8 @@ const SelectionSort = ({ data }) => {
                   ? "Comparing"
                   : step.type === "swap"
                   ? "Swapping"
+                  : step.type === "partition"
+                  ? "Partitioning"
                   : "Sorted Array"}
               </span>
               <span className="font-bold text-indigo-600">
@@ -121,6 +115,8 @@ const SelectionSort = ({ data }) => {
                     step.indices.includes(index)
                       ? step.type === "swap"
                         ? "bg-red-500 hover:shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
+                        : step.type === "partition"
+                        ? "bg-yellow-500 hover:shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
                         : step.type === "compare"
                         ? "bg-orange-500 hover:shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
                         : step.type === "sorted"
@@ -128,6 +124,9 @@ const SelectionSort = ({ data }) => {
                         : ""
                       : ""
                   }`}
+                  style={{
+                    transition: "all 0.3s ease",
+                  }}
                 >
                   {value}
                 </div>
@@ -148,8 +147,8 @@ const SelectionSort = ({ data }) => {
             Total comparisons: {comparisons}
           </p>
           <p className="text-lg text-blue-700 shadow hover:text-blue-900 transition-colors duration-300">
-            Theoretical time complexity of Selection Sort is O(n^2) for all
-            cases.
+            Theoretical time complexity of Quick Sort is O(n log n) for the
+            average case and O(n^2) for the worst case.
           </p>
         </div>
       )}
@@ -157,4 +156,4 @@ const SelectionSort = ({ data }) => {
   );
 };
 
-export default SelectionSort;
+export default QuickSort;

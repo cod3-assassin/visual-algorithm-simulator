@@ -1,5 +1,10 @@
+// InputSection.jsx
 import React from "react";
-import { DatabaseIcon } from "@heroicons/react/solid";
+import ArrayInput from "./Inputs/ArrayInput";
+import LinkedListInput from "./Inputs/LinkedListInput";
+import QueueInput from "./Inputs/QueueInput";
+import TreeInput from "./Inputs/TreeInput";
+import GraphInput from "./Inputs/GraphInput";
 
 const InputSection = ({
   input,
@@ -7,34 +12,75 @@ const InputSection = ({
   handleInputChange,
   handleTargetChange,
   category,
+  algorithm,
 }) => {
-  const showTargetInput = category === "searching";
+  // Render input component based on the selected category
+  let inputComponent = null;
+
+  switch (category) {
+    case "Array":
+      inputComponent = (
+        <ArrayInput
+          input={input}
+          handleInputChange={handleInputChange}
+          target={target}
+          handleTargetChange={handleTargetChange}
+          algorithm={algorithm}
+        />
+      );
+      break;
+    case "Linked List":
+      inputComponent = (
+        <LinkedListInput
+          input={input}
+          handleInputChange={handleInputChange}
+          target={target}
+          handleTargetChange={handleTargetChange}
+          algorithm={algorithm}
+        />
+      );
+      break;
+    case "Queue":
+      inputComponent = (
+        <QueueInput
+          input={input}
+          handleInputChange={handleInputChange}
+          target={target}
+          handleTargetChange={handleTargetChange}
+          algorithm={algorithm}
+        />
+      );
+      break;
+    case "Trees":
+      inputComponent = (
+        <TreeInput
+          input={input}
+          handleInputChange={handleInputChange}
+          target={target}
+          handleTargetChange={handleTargetChange}
+          algorithm={algorithm}
+        />
+      );
+      break;
+    case "Graph":
+      inputComponent = (
+        <GraphInput
+          input={input}
+          handleInputChange={handleInputChange}
+          handleTargetChange={handleTargetChange}
+          algorithm={algorithm}
+        />
+      );
+      break;
+    default:
+      inputComponent = null;
+  }
 
   return (
     <div className="md:col-span-3 bg-gray-800 p-4 rounded-lg shadow-lg w-full">
-      <label className="block text-lg font-semibold mb-2">
-        <DatabaseIcon className="h-6 w-6 mr-2" /> Input Data
-      </label>
-      <input
-        type="text"
-        value={input}
-        onChange={handleInputChange}
-        className="form-input block w-full p-3 rounded bg-gray-700 placeholder-gray-300"
-        placeholder="Enter comma-separated numbers..."
-      />
-      {/* Conditionally render the target input based on the selected category */}
-      {showTargetInput && (
-        <div className="mt-4">
-          <label className="block text-lg font-semibold mb-2">Target</label>
-          <input
-            type="text"
-            value={target}
-            onChange={handleTargetChange}
-            className="form-input block w-full p-3 rounded bg-gray-700 placeholder-gray-300"
-            placeholder="Enter the target value..."
-          />
-        </div>
-      )}
+      <p className="block text-lg font-semibold mb-2">Input Data</p>
+      {/* Render input component */}
+      {inputComponent}
     </div>
   );
 };

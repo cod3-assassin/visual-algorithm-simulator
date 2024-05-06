@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as d3 from "d3";
 
 const BucketSort = ({ data }) => {
   const [steps, setSteps] = useState([]);
@@ -16,34 +15,6 @@ const BucketSort = ({ data }) => {
       });
     }
   }, [data]);
-
-  useEffect(() => {
-    animateElements();
-  }, [steps]);
-
-  const animateElements = () => {
-    elementRefs.current.forEach((ref, index) => {
-      if (ref && steps.length) {
-        const node = d3.select(ref);
-        const currentStep = steps[steps.length - 1];
-        node
-          .transition()
-          .duration(300)
-          .style(
-            "transform",
-            currentStep.type === "sorted" ? "scale(1)" : "scale(1.1)"
-          )
-          .style(
-            "background-color",
-            currentStep.type === "sorted" ? "" : "purple"
-          )
-          .transition()
-          .duration(300)
-          .style("transform", "scale(1)")
-          .style("background-color", currentStep.type === "sorted" ? "" : "");
-      }
-    });
-  };
 
   const bucketSort = async (array) => {
     let localDistributions = 0;
@@ -129,6 +100,9 @@ const BucketSort = ({ data }) => {
                       ? "bg-blue-500 hover:shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
                       : ""
                   }`}
+                  style={{
+                    transition: "all 0.3s ease",
+                  }}
                 >
                   {value}
                 </div>

@@ -4,6 +4,8 @@ import DropdownSection from "./DropdownSection";
 import ControlButtons from "./ControlButtons";
 import VisualizationArea from "./VisualizationArea";
 import AdditionalInfoSection from "./AdditionalInfoSection";
+import Header from "./Header";
+import Footer from "./Footer";
 
 const AlgorithmVisualizer = () => {
   const [input, setInput] = useState("");
@@ -16,7 +18,7 @@ const AlgorithmVisualizer = () => {
   const [data, setData] = useState([]);
 
   const categories = {
-    sorting: [
+    Array: [
       "Bubble Sort",
       "Merge Sort",
       "Quick Sort",
@@ -25,9 +27,40 @@ const AlgorithmVisualizer = () => {
       "Selection Sort",
       "Radix Sort",
       "Bucket Sort",
+      "Binary Search",
+      "Linear Search",
     ],
-    searching: ["Binary Search", "Linear Search"],
-    graph: ["Dijkstra's Algorithm", "Breadth-First Search"],
+
+    Graph: [
+      "Dijkstra's Algorithm",
+      "Breadth-First Search",
+      "Depth-First Search",
+      "Bellman-Ford Algorithm",
+      "Floyd-Warshall Algorithm",
+      "Kruskal's Algorithm",
+      "Prim's Algorithm",
+      "Topological Sorting",
+      "Strongly Connected Components",
+    ],
+    "Linked List": [
+      "Insertion at beginning",
+      "Insertion at end",
+      "Deletion by value",
+      "Deletion by position",
+      "Reversal",
+      "Detect Loop",
+      "Remove Loop",
+    ],
+    Queue: ["Enqueue", "Dequeue", "Peek", "Empty check", "Size check"],
+    Trees: [
+      "BST Insertion",
+      "BST Deletion",
+      "Depth-First Traversals",
+      "Breadth-First Traversal",
+      "Finding height of binary tree",
+      "Check if binary tree is balanced",
+      "Lowest Common Ancestor",
+    ],
   };
 
   const categoryRef = useRef(null);
@@ -78,12 +111,14 @@ const AlgorithmVisualizer = () => {
     if (!startVisualization || event.target.value === "") {
       setTarget(event.target.value);
     }
+    console.log("Target :", target);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-700 to-gray-900 text-white flex items-center justify-center px-4 py-4 w-full">
       <div className="space-y-6 w-full bg-white/10 backdrop-blur-md shadow-xl rounded-lg p-6">
-        <h1 className="text-4xl font-bold text-center">Algorithm Visualizer</h1>
+        <Header />
+        {/* <h1 className="text-4xl font-bold text-center">Algorithm Visualizer</h1> */}
         <div className="flex flex-col md:flex-row gap-4 w-full md:items-stretch">
           <div className="flex flex-col w-full md:w-1/3">
             <InputSection
@@ -91,7 +126,7 @@ const AlgorithmVisualizer = () => {
               target={target}
               handleInputChange={handleInputChange}
               handleTargetChange={handleTargetChange}
-              algorithm={algorithm}
+              algorithm={algorithm} // Pass the algorithm prop here
               category={category}
               className="flex-1 p-4 bg-gray-800 rounded-lg shadow-lg"
             />
@@ -125,6 +160,7 @@ const AlgorithmVisualizer = () => {
           data={data}
           target={target}
         />
+        <Footer />
       </div>
     </div>
   );

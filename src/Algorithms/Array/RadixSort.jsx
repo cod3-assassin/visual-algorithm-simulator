@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as d3 from "d3";
 
 const RadixSort = ({ data }) => {
   const [steps, setSteps] = useState([]);
   const [timeTaken, setTimeTaken] = useState(null);
-  const [distributions, setDistributions] = useState(0); // Changed state name
+  const [distributions, setDistributions] = useState(0);
   const elementRefs = useRef([]);
 
   useEffect(() => {
@@ -18,35 +17,11 @@ const RadixSort = ({ data }) => {
   }, [data]);
 
   useEffect(() => {
-    animateElements();
+    // No animation needed
   }, [steps]);
 
-  const animateElements = () => {
-    elementRefs.current.forEach((ref, index) => {
-      if (ref && steps.length) {
-        const node = d3.select(ref);
-        const currentStep = steps[steps.length - 1];
-        node
-          .transition()
-          .duration(300)
-          .style(
-            "transform",
-            currentStep.type === "sorted" ? "scale(1)" : "scale(1.1)"
-          )
-          .style(
-            "background-color",
-            currentStep.type === "sorted" ? "" : "purple"
-          )
-          .transition()
-          .duration(300)
-          .style("transform", "scale(1)")
-          .style("background-color", currentStep.type === "sorted" ? "" : "");
-      }
-    });
-  };
-
   const radixSort = async (array) => {
-    let localDistributions = 0; // Changed variable name
+    let localDistributions = 0;
     const stepsCopy = [];
 
     const getMax = () => {
@@ -106,7 +81,7 @@ const RadixSort = ({ data }) => {
     });
 
     setSteps(stepsCopy);
-    setDistributions(localDistributions); // Set distribution count
+    setDistributions(localDistributions);
   };
 
   return (
@@ -163,7 +138,7 @@ const RadixSort = ({ data }) => {
             Sorting completed in {timeTaken} milliseconds.
           </p>
           <p className="text-lg text-white-800 shadow">
-            Total distributions: {distributions} {/* Updated label */}
+            Total distributions: {distributions}
           </p>
           <p className="text-lg text-blue-700 shadow hover:text-blue-900 transition-colors duration-300">
             Theoretical time complexity of Radix Sort is O(nk) for all cases,

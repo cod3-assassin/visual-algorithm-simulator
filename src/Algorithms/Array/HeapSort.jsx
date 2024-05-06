@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as d3 from "d3";
 
-const InsertionSort = ({ data }) => {
+const HeapSort = ({ data }) => {
   const [steps, setSteps] = useState([]);
   const [timeTaken, setTimeTaken] = useState(null);
-  const [comparisons, setComparisons] = useState(0);
+  const [sortingMethod, setSortingMethod] = useState("");
   const elementRefs = useRef([]);
 
   useEffect(() => {
     if (data.length > 0) {
       const startTime = performance.now();
-      insertionSort([...data]).then(() => {
+      heapSort([...data]).then(() => {
         const endTime = performance.now();
         setTimeTaken((endTime - startTime).toFixed(2));
       });
@@ -24,74 +23,88 @@ const InsertionSort = ({ data }) => {
   const animateElements = () => {
     elementRefs.current.forEach((ref, index) => {
       if (ref && steps.length) {
-        const node = d3.select(ref);
         const currentStep = steps[steps.length - 1];
-        node
-          .transition()
-          .duration(300)
-          .on("start", function () {
-            d3.select(this)
-              .style(
-                "transform",
-                currentStep.type === "sorted" ? "scale(1)" : "scale(1.1)"
-              )
-              .style(
-                "background-color",
-                currentStep.type === "compare" ? "orange" : "purple"
-              );
-          })
-          .on("end", function () {
-            d3.select(this)
-              .transition()
-              .duration(300)
-              .style("transform", "scale(1)")
-              .style(
-                "background-color",
-                currentStep.type === "sorted" ? "" : ""
-              );
-          });
+        ref.style.transform =
+          currentStep.type === "sorted" ? "scale(1)" : "scale(1.1)";
+        ref.style.backgroundColor =
+          currentStep.type === "compare"
+            ? "blue"
+            : currentStep.type === "swap"
+            ? "red"
+            : currentStep.type === "sorted"
+            ? ""
+            : "purple";
       }
     });
   };
 
-  const insertionSort = async (array) => {
-    let localComparisons = 0;
+  const heapSort = async (array) => {
     const stepsCopy = [];
 
-    for (let i = 1; i < array.length; i++) {
-      let key = array[i];
-      let j = i - 1;
+    async function heapify(arr, n, i) {
+      let largest = i;
+      let left = 2 * i + 1;
+      let right = 2 * i + 2;
 
-      while (j >= 0 && array[j] > key) {
-        localComparisons++;
+      if (left < n && arr[left] > arr[largest]) {
+        largest = left;
+      }
+
+      if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+      }
+
+      if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
         stepsCopy.push({
-          type: "compare",
-          indices: [j, j + 1],
-          array: [...array],
+          type: "swap",
+          indices: [i, largest],
+          array: [...arr],
           step: stepsCopy.length + 1,
+          method: "Heapify",
         });
         await new Promise((resolve) => setTimeout(resolve, 300));
-        array[j + 1] = array[j];
-        j = j - 1;
+
+        await heapify(arr, n, largest);
       }
-      array[j + 1] = key;
-      stepsCopy.push({
-        type: "insert",
-        indices: [j + 1],
-        array: [...array],
-        step: stepsCopy.length + 1,
-      });
     }
+
+    async function buildHeap(arr) {
+      for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {
+        await heapify(arr, arr.length, i);
+      }
+    }
+
+    async function sort(arr) {
+      await buildHeap(arr);
+
+      for (let i = arr.length - 1; i > 0; i--) {
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+        stepsCopy.push({
+          type: "swap",
+          indices: [0, i],
+          array: [...arr],
+          step: stepsCopy.length + 1,
+          method: "Swap",
+        });
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        await heapify(arr, i, 0);
+      }
+    }
+
+    await sort(array);
 
     stepsCopy.push({
       type: "sorted",
       array: [...array],
       step: stepsCopy.length + 1,
       indices: Array.from({ length: array.length }, (_, i) => i),
+      method: "Sorted",
     });
 
     setSteps(stepsCopy);
-    setComparisons(localComparisons);
+    setSortingMethod(stepsCopy[0]?.method ?? "");
   };
 
   return (
@@ -105,20 +118,25 @@ const InsertionSort = ({ data }) => {
                 className={`mx-2 font-bold ${
                   step.type === "compare"
                     ? "text-blue-500"
-                    : step.type === "insert"
+                    : step.type === "swap"
                     ? "text-red-500"
-                    : "text-green-400 shadow-lg"
+                    : step.type === "sorted"
+                    ? "text-green-400 shadow-lg"
+                    : "text-purple-500"
                 }`}
               >
                 {step.type === "compare"
                   ? "Comparing"
-                  : step.type === "insert"
-                  ? "Inserting"
-                  : "Sorted Array"}
+                  : step.type === "swap"
+                  ? "Swapping"
+                  : step.type === "sorted"
+                  ? "Sorted Array"
+                  : "Building Heap"}
               </span>
               <span className="font-bold text-indigo-600">
                 {step.indices.map((index) => step.array[index]).join(", ")}
               </span>
+              <span className="font-bold text-yellow-500">{step.method}</span>
             </div>
             <div className="flex justify-center flex-wrap">
               {step.array.map((value, index) => (
@@ -127,15 +145,16 @@ const InsertionSort = ({ data }) => {
                   key={index}
                   className={`animated-element border p-2 ${
                     step.indices.includes(index)
-                      ? step.type === "insert"
+                      ? step.type === "swap"
                         ? "bg-red-500 hover:shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
-                        : step.type === "compare"
-                        ? "bg-orange-500 hover:shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
                         : step.type === "sorted"
-                        ? "bg-green-800 hover:bg-yellow-500 transition-colors duration-300 shadow-lg transform hover:-translate-y-1"
+                        ? "bg-green-800 hover:bg-yellow-500 transition-colors duration-300 shadow-lg transform hover:-translate-y-2"
                         : ""
                       : ""
                   }`}
+                  style={{
+                    transition: "all 0.3s ease",
+                  }}
                 >
                   {value}
                 </div>
@@ -153,12 +172,11 @@ const InsertionSort = ({ data }) => {
             Sorting completed in {timeTaken} milliseconds.
           </p>
           <p className="text-lg text-white-800 shadow">
-            Total comparisons: {comparisons}
+            Sorting Method: {sortingMethod}
           </p>
           <p className="text-lg text-blue-700 shadow hover:text-blue-900 transition-colors duration-300">
-            Theoretical time complexity of Insertion Sort is O(n^2) for the
-            worst case and O(n) for the best case when the array is already
-            sorted.
+            Theoretical time complexity of Heap Sort is O(n log n) for all
+            cases.
           </p>
         </div>
       )}
@@ -166,4 +184,4 @@ const InsertionSort = ({ data }) => {
   );
 };
 
-export default InsertionSort;
+export default HeapSort;

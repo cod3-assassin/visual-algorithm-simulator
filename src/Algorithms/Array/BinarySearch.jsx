@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as d3 from "d3";
 
 const BinarySearch = ({ data, target }) => {
   const [steps, setSteps] = useState([]);
@@ -86,35 +85,6 @@ const BinarySearch = ({ data, target }) => {
     } else {
       return 1;
     }
-  };
-
-  useEffect(() => {
-    if (steps.length > 0) {
-      animateElements();
-    }
-  }, [steps]);
-
-  const animateElements = () => {
-    elementRefs.current.forEach((ref, index) => {
-      if (ref) {
-        const node = d3.select(ref);
-        node
-          .transition()
-          .duration(300)
-          .on("start", function () {
-            d3.select(this)
-              .style("transform", "scale(1.1)")
-              .style("background-color", "orange");
-          })
-          .on("end", function () {
-            d3.select(this)
-              .transition()
-              .duration(300)
-              .style("transform", "scale(1.1)")
-              .style("background-color", index === foundIndex ? "green" : "");
-          });
-      }
-    });
   };
 
   return (

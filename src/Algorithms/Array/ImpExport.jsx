@@ -6,6 +6,8 @@ import MergeSortVisualizer from "./MergeSort";
 import SelectionSort from "./SelectionSort";
 import RadixSort from "./RadixSort";
 import QuickSort from "./QuickSort";
+import BinarySearch from "./BinarySearch";
+import LinearSearch from "./LinearSearch";
 
 export {
   BubbleSortVisualizer,
@@ -16,4 +18,6 @@ export {
   SelectionSort,
   RadixSort,
   QuickSort,
+  BinarySearch,
+  LinearSearch,
 };

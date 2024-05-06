@@ -1,130 +1,60 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as d3 from "d3";
 
-const HeapSort = ({ data }) => {
+const SelectionSort = ({ data }) => {
   const [steps, setSteps] = useState([]);
   const [timeTaken, setTimeTaken] = useState(null);
-  const [sortingMethod, setSortingMethod] = useState("");
+  const [comparisons, setComparisons] = useState(0);
   const elementRefs = useRef([]);
 
   useEffect(() => {
     if (data.length > 0) {
       const startTime = performance.now();
-      heapSort([...data]).then(() => {
+      selectionSort([...data]).then(() => {
         const endTime = performance.now();
         setTimeTaken((endTime - startTime).toFixed(2));
       });
     }
   }, [data]);
 
-  useEffect(() => {
-    animateElements();
-  }, [steps]);
-
-  const animateElements = () => {
-    elementRefs.current.forEach((ref, index) => {
-      if (ref && steps.length) {
-        const node = d3.select(ref);
-        const currentStep = steps[steps.length - 1];
-        node
-          .transition()
-          .duration(300)
-          .on("start", function () {
-            d3.select(this)
-              .style(
-                "transform",
-                currentStep.type === "sorted" ? "scale(1)" : "scale(1.1)"
-              )
-              .style(
-                "background-color",
-                currentStep.type === "compare"
-                  ? "blue"
-                  : currentStep.type === "swap"
-                  ? "red"
-                  : "purple"
-              );
-          })
-          .on("end", function () {
-            d3.select(this)
-              .transition()
-              .duration(300)
-              .style("transform", "scale(1)")
-              .style(
-                "background-color",
-                currentStep.type === "sorted" ? "" : ""
-              );
-          });
-      }
-    });
-  };
-
-  const heapSort = async (array) => {
+  const selectionSort = async (array) => {
+    let localComparisons = 0;
     const stepsCopy = [];
 
-    async function heapify(arr, n, i) {
-      let largest = i;
-      let left = 2 * i + 1;
-      let right = 2 * i + 2;
-
-      if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-      }
-
-      if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-      }
-
-      if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+    for (let i = 0; i < array.length - 1; i++) {
+      let minIndex = i;
+      for (let j = i + 1; j < array.length; j++) {
+        localComparisons++;
         stepsCopy.push({
-          type: "swap",
-          indices: [i, largest],
-          array: [...arr],
+          type: "compare",
+          indices: [minIndex, j],
+          array: [...array],
           step: stepsCopy.length + 1,
-          method: "Heapify",
         });
         await new Promise((resolve) => setTimeout(resolve, 300));
-
-        await heapify(arr, n, largest);
+        if (array[j] < array[minIndex]) {
+          minIndex = j;
+        }
       }
-    }
-
-    async function buildHeap(arr) {
-      for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {
-        await heapify(arr, arr.length, i);
-      }
-    }
-
-    async function sort(arr) {
-      await buildHeap(arr);
-
-      for (let i = arr.length - 1; i > 0; i--) {
-        [arr[0], arr[i]] = [arr[i], arr[0]];
+      if (minIndex !== i) {
+        [array[i], array[minIndex]] = [array[minIndex], array[i]];
         stepsCopy.push({
           type: "swap",
-          indices: [0, i],
-          array: [...arr],
+          indices: [i, minIndex],
+          array: [...array],
           step: stepsCopy.length + 1,
-          method: "Swap",
         });
-        await new Promise((resolve) => setTimeout(resolve, 300));
-
-        await heapify(arr, i, 0);
       }
     }
-
-    await sort(array);
 
     stepsCopy.push({
       type: "sorted",
       array: [...array],
       step: stepsCopy.length + 1,
       indices: Array.from({ length: array.length }, (_, i) => i),
-      method: "Sorted",
     });
 
     setSteps(stepsCopy);
-    setSortingMethod(stepsCopy[0]?.method ?? "");
+    setComparisons(localComparisons);
   };
 
   return (
@@ -140,23 +70,18 @@ const HeapSort = ({ data }) => {
                     ? "text-blue-500"
                     : step.type === "swap"
                     ? "text-red-500"
-                    : step.type === "sorted"
-                    ? "text-green-400 shadow-lg"
-                    : "text-purple-500"
+                    : "text-green-400 shadow-lg"
                 }`}
               >
                 {step.type === "compare"
                   ? "Comparing"
                   : step.type === "swap"
                   ? "Swapping"
-                  : step.type === "sorted"
-                  ? "Sorted Array"
-                  : "Building Heap"}
+                  : "Sorted Array"}
               </span>
               <span className="font-bold text-indigo-600">
                 {step.indices.map((index) => step.array[index]).join(", ")}
               </span>
-              <span className="font-bold text-yellow-500">{step.method}</span>
             </div>
             <div className="flex justify-center flex-wrap">
               {step.array.map((value, index) => (
@@ -167,6 +92,8 @@ const HeapSort = ({ data }) => {
                     step.indices.includes(index)
                       ? step.type === "swap"
                         ? "bg-red-500 hover:shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
+                        : step.type === "compare"
+                        ? "bg-orange-500 hover:shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
                         : step.type === "sorted"
                         ? "bg-green-800 hover:bg-yellow-500 transition-colors duration-300 shadow-lg transform hover:-translate-y-1"
                         : ""
@@ -189,10 +116,10 @@ const HeapSort = ({ data }) => {
             Sorting completed in {timeTaken} milliseconds.
           </p>
           <p className="text-lg text-white-800 shadow">
-            Sorting Method: {sortingMethod}
+            Total comparisons: {comparisons}
           </p>
           <p className="text-lg text-blue-700 shadow hover:text-blue-900 transition-colors duration-300">
-            Theoretical time complexity of Heap Sort is O(n log n) for all
+            Theoretical time complexity of Selection Sort is O(n^2) for all
             cases.
           </p>
         </div>
@@ -201,4 +128,4 @@ const HeapSort = ({ data }) => {
   );
 };
 
-export default HeapSort;
+export default SelectionSort;

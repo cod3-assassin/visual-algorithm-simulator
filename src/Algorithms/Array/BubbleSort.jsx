@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as d3 from "d3";
 
 const BubbleSortVisualizer = ({ data }) => {
   const [steps, setSteps] = useState([]);
@@ -17,35 +16,6 @@ const BubbleSortVisualizer = ({ data }) => {
       });
     }
   }, [data]);
-
-  useEffect(() => {
-    if (steps.length > 0) {
-      animateElements();
-    }
-  }, [steps]);
-
-  const animateElements = () => {
-    elementRefs.current.forEach((ref, index) => {
-      if (ref) {
-        const node = d3.select(ref);
-        node
-          .transition()
-          .duration(300)
-          .on("start", function () {
-            d3.select(this)
-              .style("transform", "scale(1.1)")
-              .style("background-color", "orange");
-          })
-          .on("end", function () {
-            d3.select(this)
-              .transition()
-              .duration(300)
-              .style("transform", "scale(1)")
-              .style("background-color", "");
-          });
-      }
-    });
-  };
 
   const bubbleSort = async (array) => {
     let localComparisons = 0;

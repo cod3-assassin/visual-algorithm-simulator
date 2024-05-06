@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as d3 from "d3";
 
-const MergeSortVisualizer = ({ data }) => {
+const InsertionSort = ({ data }) => {
   const [steps, setSteps] = useState([]);
   const [timeTaken, setTimeTaken] = useState(null);
   const [comparisons, setComparisons] = useState(0);
@@ -10,102 +9,41 @@ const MergeSortVisualizer = ({ data }) => {
   useEffect(() => {
     if (data.length > 0) {
       const startTime = performance.now();
-      mergeSort([...data]).then(() => {
+      insertionSort([...data]).then(() => {
         const endTime = performance.now();
         setTimeTaken((endTime - startTime).toFixed(2));
       });
     }
   }, [data]);
 
-  useEffect(() => {
-    animateElements();
-  }, [steps]);
-
-  const animateElements = () => {
-    elementRefs.current.forEach((ref, index) => {
-      if (ref && steps.length) {
-        const node = d3.select(ref);
-        const currentStep = steps[steps.length - 1];
-        node
-          .transition()
-          .duration(300)
-          .on("start", function () {
-            d3.select(this)
-              .style(
-                "transform",
-                currentStep.type === "sorted" ? "scale(1)" : "scale(1.1)"
-              )
-              .style(
-                "background-color",
-                currentStep.type === "compare" ? "orange" : "purple"
-              );
-          })
-          .on("end", function () {
-            d3.select(this)
-              .transition()
-              .duration(300)
-              .style("transform", "scale(1)")
-              .style(
-                "background-color",
-                currentStep.type === "sorted" ? "" : ""
-              );
-          });
-      }
-    });
-  };
-
-  const mergeSort = async (array) => {
+  const insertionSort = async (array) => {
     let localComparisons = 0;
     const stepsCopy = [];
 
-    async function merge(left, right, start, end) {
-      const merged = [];
-      let i = 0,
-        j = 0;
-      while (i < left.length && j < right.length) {
+    for (let i = 1; i < array.length; i++) {
+      let key = array[i];
+      let j = i - 1;
+
+      while (j >= 0 && array[j] > key) {
         localComparisons++;
         stepsCopy.push({
           type: "compare",
-          indices: [start + i, start + left.length + j],
+          indices: [j, j + 1],
           array: [...array],
           step: stepsCopy.length + 1,
         });
         await new Promise((resolve) => setTimeout(resolve, 300));
-        if (left[i] < right[j]) {
-          merged.push(left[i++]);
-        } else {
-          merged.push(right[j++]);
-        }
+        array[j + 1] = array[j];
+        j = j - 1;
       }
-
-      while (i < left.length) merged.push(left[i++]);
-      while (j < right.length) merged.push(right[j++]);
-
-      for (let k = 0; k < merged.length; k++) {
-        array[start + k] = merged[k];
-        stepsCopy.push({
-          type: "merge",
-          indices: [start + k],
-          array: [...array],
-          step: stepsCopy.length + 1,
-        });
-      }
+      array[j + 1] = key;
+      stepsCopy.push({
+        type: "insert",
+        indices: [j + 1],
+        array: [...array],
+        step: stepsCopy.length + 1,
+      });
     }
-
-    async function sort(array, start, end) {
-      if (end - start < 1) return;
-      const mid = start + Math.floor((end - start) / 2);
-      await sort(array, start, mid);
-      await sort(array, mid + 1, end);
-      await merge(
-        array.slice(start, mid + 1),
-        array.slice(mid + 1, end + 1),
-        start,
-        end
-      );
-    }
-
-    await sort(array, 0, array.length - 1);
 
     stepsCopy.push({
       type: "sorted",
@@ -113,6 +51,7 @@ const MergeSortVisualizer = ({ data }) => {
       step: stepsCopy.length + 1,
       indices: Array.from({ length: array.length }, (_, i) => i),
     });
+
     setSteps(stepsCopy);
     setComparisons(localComparisons);
   };
@@ -128,15 +67,15 @@ const MergeSortVisualizer = ({ data }) => {
                 className={`mx-2 font-bold ${
                   step.type === "compare"
                     ? "text-blue-500"
-                    : step.type === "merge"
+                    : step.type === "insert"
                     ? "text-red-500"
                     : "text-green-400 shadow-lg"
                 }`}
               >
                 {step.type === "compare"
                   ? "Comparing"
-                  : step.type === "merge"
-                  ? "Merging"
+                  : step.type === "insert"
+                  ? "Inserting"
                   : "Sorted Array"}
               </span>
               <span className="font-bold text-indigo-600">
@@ -150,7 +89,7 @@ const MergeSortVisualizer = ({ data }) => {
                   key={index}
                   className={`animated-element border p-2 ${
                     step.indices.includes(index)
-                      ? step.type === "merge"
+                      ? step.type === "insert"
                         ? "bg-red-500 hover:shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
                         : step.type === "compare"
                         ? "bg-orange-500 hover:shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
@@ -179,8 +118,9 @@ const MergeSortVisualizer = ({ data }) => {
             Total comparisons: {comparisons}
           </p>
           <p className="text-lg text-blue-700 shadow hover:text-blue-900 transition-colors duration-300">
-            Theoretical time complexity of Merge Sort is O(n log n) for all
-            cases.
+            Theoretical time complexity of Insertion Sort is O(n^2) for the
+            worst case and O(n) for the best case when the array is already
+            sorted.
           </p>
         </div>
       )}
@@ -188,4 +128,4 @@ const MergeSortVisualizer = ({ data }) => {
   );
 };
 
-export default MergeSortVisualizer;
+export default InsertionSort;

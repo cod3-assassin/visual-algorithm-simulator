@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as d3 from "d3";
 
 const LinearSearch = ({ data, target }) => {
   const [steps, setSteps] = useState([]);
@@ -15,12 +14,6 @@ const LinearSearch = ({ data, target }) => {
       setTimeTaken((endTime - startTime).toFixed(2));
     }
   }, [data, target]);
-
-  useEffect(() => {
-    if (steps.length > 0) {
-      animateElements();
-    }
-  }, [steps]);
 
   const linearSearch = (array, target) => {
     const stepsCopy = [];
@@ -49,26 +42,6 @@ const LinearSearch = ({ data, target }) => {
       }
     }
     setSteps(stepsCopy);
-  };
-
-  const animateElements = () => {
-    elementRefs.current.forEach((ref, index) => {
-      if (ref) {
-        const node = d3.select(ref);
-        node
-          .transition()
-          .duration(300)
-          .on("start", function () {
-            d3.select(this).style("background-color", "orange");
-          })
-          .on("end", function () {
-            d3.select(this)
-              .transition()
-              .duration(300)
-              .style("background-color", index === foundIndex ? "green" : "");
-          });
-      }
-    });
   };
 
   return (
