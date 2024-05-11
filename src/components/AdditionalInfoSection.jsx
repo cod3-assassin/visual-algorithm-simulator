@@ -1,39 +1,30 @@
 import React from "react";
-import { FaRegDotCircle } from "react-icons/fa";
 
 const AdditionalInfoSection = () => {
   return (
-    <div className="p-4 bg-gray-800 rounded-lg shadow-lg">
+    <div className="relative md:col-span-9 bg-gray-600 p-7 rounded-lg shadow-lg flex flex-col w-full">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-2 text-white">Instructions:</h3>
-        <ol className="list-decimal pl-6 text-gray-300">
-          <li className="flex items-center">
-            <FaRegDotCircle className="mr-2 text-green-500" />
-            Select the appropriate data structure for visualization.
+        <h3 className="text-lg font-semibold mb-2">Instructions:</h3>
+        <p className="text-gray-300">To use the algorithm visualizer:</p>
+        <ul className="list-disc pl-6 text-gray-300">
+          <li>
+            Step 1: Select the appropriate data structure for visualization.
           </li>
-          <li className="flex items-center">
-            <FaRegDotCircle className="mr-2 text-green-500" />
-            Choose the algorithm you want to visualize.
+          <li>Step 2: Choose the algorithm you want to visualize.</li>
+          <li>
+            Step 3: Input the necessary data for the selected algorithm
+            execution.
           </li>
-          <li className="flex items-center">
-            <FaRegDotCircle className="mr-2 text-green-500" />
-            Input the necessary data for the selected algorithm.
+          <li>Step 4: Click the "Start" button to begin visualization.</li>
+          <li>
+            Step 5: Follow the step-by-step execution to understand the
+            algorithm's behavior.
           </li>
-          <li className="flex items-center">
-            <FaRegDotCircle className="mr-2 text-green-500" />
-            Click the "Start" button to begin visualization.
+          <li>
+            Step 6: After completion, click the "Clear" button to reset and
+            proceed to the next algorithm.
           </li>
-          <li className="flex items-center">
-            <FaRegDotCircle className="mr-2 text-green-500" />
-            Follow the step-by-step execution to understand the algorithm's
-            behavior.
-          </li>
-          <li className="flex items-center">
-            <FaRegDotCircle className="mr-2 text-green-500" />
-            After completion, click the "Clear" button to reset and proceed to
-            the next algorithm.
-          </li>
-        </ol>
+        </ul>
       </div>
     </div>
   );
