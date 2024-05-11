@@ -3,7 +3,7 @@ import InsertionAtBeginning from "./InsertionAtBeginning";
 import InsertionAtEnd from "./InsertionAtEnd";
 import DeletionByValue from "./DeletionByValue";
 import DetectLoop from "./DetectLoop";
-import RemoveLoop from "./RemoveLoop";
+
 import Reversal from "./Reversal";
 
 export {
@@ -12,6 +12,5 @@ export {
   InsertionAtBeginning,
   InsertionAtEnd,
   DetectLoop,
-  RemoveLoop,
   Reversal,
 };

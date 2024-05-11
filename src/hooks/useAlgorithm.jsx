@@ -11,17 +11,6 @@ import {
   BinarySearch,
   LinearSearch,
 } from "../Algorithms/Array/ImpExport";
-import {
-  BellmanFordAlgorithm,
-  BreadthFirstSearch,
-  DepthFirstSearch,
-  DijkstrasAlgorithm,
-  FloydWarshallAlgorithm,
-  KruskalsAlgorithm,
-  PrimsAlgorithm,
-  StronglyConnectedComponents,
-  TopologicalSorting,
-} from "../Algorithms/Graph/ImportExportGraph";
 
 import {
   InsertionAtBeginning,
@@ -29,11 +18,17 @@ import {
   DeletionByPosition,
   DeletionByValue,
   DetectLoop,
-  RemoveLoop,
   Reversal,
 } from "../Algorithms/Linked List/ImportExportLinklist";
 
 import { Dequeue, Enqueue, Peek } from "../Algorithms/Queuee/ImportExportQueue";
+
+import {
+  BinarySearchTreeDeletion,
+  BinarySearchTreeInsertion,
+  BinaryTreeHeight,
+  CheckBalancedBinaryTree,
+} from "../Algorithms/Trees/ImportExportTrees";
 
 const useAlgorithm = (algorithm, data, target) => {
   switch (algorithm) {
@@ -75,6 +70,16 @@ const useAlgorithm = (algorithm, data, target) => {
       return <DeletionByValue data={data} target={target} />;
     case "Detect Loop":
       return <DetectLoop data={data} />;
+    case "Reversal":
+      return <Reversal data={data} />;
+    case "BST Insertion":
+      return <BinarySearchTreeInsertion data={data} />;
+    case "BST Deletion":
+      return <BinarySearchTreeDeletion data={data} target={target} />;
+    case "Finding height of binary tree":
+      return <BinaryTreeHeight data={data} />;
+    case "Check if binary tree is balanced":
+      return <CheckBalancedBinaryTree data={data} />;
 
     default:
       return null;

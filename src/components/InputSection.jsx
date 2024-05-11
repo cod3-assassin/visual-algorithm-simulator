@@ -4,7 +4,6 @@ import ArrayInput from "./Inputs/ArrayInput";
 import LinkedListInput from "./Inputs/LinkedListInput";
 import QueueInput from "./Inputs/QueueInput";
 import TreeInput from "./Inputs/TreeInput";
-import GraphInput from "./Inputs/GraphInput";
 
 const InputSection = ({
   input,
@@ -62,16 +61,7 @@ const InputSection = ({
         />
       );
       break;
-    case "Graph":
-      inputComponent = (
-        <GraphInput
-          input={input}
-          handleInputChange={handleInputChange}
-          handleTargetChange={handleTargetChange}
-          algorithm={algorithm}
-        />
-      );
-      break;
+
     default:
       inputComponent = null;
   }

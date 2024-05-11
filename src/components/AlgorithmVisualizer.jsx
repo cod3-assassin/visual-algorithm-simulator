@@ -31,17 +31,6 @@ const AlgorithmVisualizer = () => {
       "Linear Search",
     ],
 
-    Graph: [
-      "Dijkstra's Algorithm",
-      "Breadth-First Search",
-      "Depth-First Search",
-      "Bellman-Ford Algorithm",
-      "Floyd-Warshall Algorithm",
-      "Kruskal's Algorithm",
-      "Prim's Algorithm",
-      "Topological Sorting",
-      "Strongly Connected Components",
-    ],
     "Linked List": [
       "Insertion at beginning",
       "Insertion at end",
@@ -49,17 +38,13 @@ const AlgorithmVisualizer = () => {
       "Deletion by position",
       "Reversal",
       "Detect Loop",
-      "Remove Loop",
     ],
-    Queue: ["Enqueue", "Dequeue", "Peek", "Empty check", "Size check"],
+    Queue: ["Enqueue", "Dequeue", "Peek"],
     Trees: [
       "BST Insertion",
       "BST Deletion",
-      "Depth-First Traversals",
-      "Breadth-First Traversal",
       "Finding height of binary tree",
       "Check if binary tree is balanced",
-      "Lowest Common Ancestor",
     ],
   };
 
@@ -111,7 +96,6 @@ const AlgorithmVisualizer = () => {
     if (!startVisualization || event.target.value === "") {
       setTarget(event.target.value);
     }
-    console.log("Target :", target);
   };
 
   return (

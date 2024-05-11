@@ -83,11 +83,11 @@ const DropdownSection = ({
                 ))}
               <div className="scroll-arrows absolute top-0 right-0 mr-2 mt-2">
                 <ChevronUpIcon
-                  className="h-4 w-4 text-white cursor-pointer mb-1 hover:text-gray-400 hover:bg-gray-700 rounded-full transition duration-300"
+                  className="h-4 w-4 text-white cursor-pointer mb-1 hover:text-gray-400 hover:bg-gray-100 rounded-full transition duration-300"
                   onClick={(e) => handleCategoryScroll(e, "up")}
                 />
                 <ChevronDownIcon
-                  className="h-4 w-4 text-white cursor-pointer mt-24 hover:text-gray-400 hover:bg-gray-700 rounded-full transition duration-300"
+                  className="h-4 w-4 text-white cursor-pointer mt-24 hover:text-gray-400 hover:bg-gray-100 rounded-full transition duration-300"
                   onClick={(e) => handleCategoryScroll(e, "down")}
                 />
               </div>
@@ -124,11 +124,11 @@ const DropdownSection = ({
               ))}
             <div className="scroll-arrows absolute top-0 right-0 mr-2 mt-2">
               <ChevronUpIcon
-                className="h-4 w-4 text-white cursor-pointer mb-1 hover:text-gray-400 hover:bg-gray-700 rounded-full transition duration-300"
+                className="h-4 w-4 text-white cursor-pointer mb-1 hover:text-gray-400 hover:bg-gray-100 rounded-full transition duration-300"
                 onClick={(e) => handleAlgorithmScroll(e, "up")}
               />
               <ChevronDownIcon
-                className="h-4 w-4 text-white cursor-pointer mt-24 hover:text-gray-400 hover:bg-gray-700 rounded-full transition duration-300"
+                className="h-6 w-4 text-white cursor-pointer mt-24 hover:text-white-900 hover:bg-gray-100 rounded-full transition duration-300"
                 onClick={(e) => handleAlgorithmScroll(e, "down")}
               />
             </div>
